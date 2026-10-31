@@ -26,7 +26,7 @@
 
         /* Page Styling */
         body {
-            min-height: 100vh;
+            min-height: 200vh;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -46,7 +46,7 @@
         .container {
             width: 100%;
             max-width: 750px;
-            padding: 60px 40px;
+            padding: 55px 30px;
             text-align: center;
 
             background-color: var(--card-color);
