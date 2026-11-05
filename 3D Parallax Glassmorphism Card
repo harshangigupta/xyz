@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive 3D Glassmorphism Card</title>
+  <style>
+    /* CSS Custom Properties & Reset */
+    :root {
+      --bg-color: #0b0d19;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.15);
+      --primary-glow: #7928ca;
+      --secondary-glow: #ff0080;
+      --text-main: #f3f4f6;
+      --text-sub: #9ca3af;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--bg-color);
+      overflow: hidden;
+      perspective: 1000px;
+    }
+
+    /* Ambient Background Orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      z-index: 0;
+      animation: float 8s ease-in-out infinite alternate;
+    }
+
+    .orb-1 {
+      width: 300px;
+      height: 300px;
+      background: var(--primary-glow);
+      top: 15%;
+      left: 20%;
+    }
+
+    .orb-2 {
+      width: 250px;
+      height: 250px;
+      background: var(--secondary-glow);
+      bottom: 15%;
+      right: 20%;
+      animation-delay: -4s;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(-30px) scale(1.1); }
+    }
+
+    /* 3D Card Container */
+    .card-container {
+      position: relative;
+      width: 380px;
+      height: 500px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+      transform-style: preserve-3d;
+      transition: transform 0.1s ease-out, box-shadow 0.3s ease;
+      z-index: 1;
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    /* Dynamic Light Reflection Layer */
+    .glare {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(
+        circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+        rgba(255, 255, 255, 0.25) 0%,
+        rgba(255, 255, 255, 0) 60%
+      );
+      pointer-events: none;
+      mix-blend-mode: overlay;
+      border-radius: 24px;
+    }
+
+    /* Inner Card Layers for Parallax Depth */
+    .card-content {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transform-style: preserve-3d;
+    }
+
+    .badge {
+      align-self: flex-start;
+      padding: 6px 14px;
+      background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow));
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-radius: 20px;
+      transform: translateZ(30px);
+    }
+
+    .visual-element {
+      width: 100%;
+      height: 180px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transform: translateZ(50px);
+    }
+
+    .cube-core {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, #00f2fe, #4facfe);
+      border-radius: 16px;
+      box-shadow: 0 0 30px rgba(79, 172, 254, 0.6);
+      animation: rotateCore 6s linear infinite;
+    }
+
+    @keyframes rotateCore {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.15); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+
+    .card-details {
+      transform: translateZ(40px);
+    }
+
+    .card-title {
+      color: var(--text-main);
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .card-description {
+      color: var(--text-sub);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+
+    .card-btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #0b0d19;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transform: translateZ(35px);
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .card-btn:hover {
+      background: #ffffff;
+      transform: translateZ(45px) scale(1.02);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Light Orbs -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <!-- Main Interactive Card -->
+  <div class="card-container" id="card">
+    <div class="glare"></div>
+    <div class="card-content">
+      <span class="badge">PRO EDITION</span>
+      
+      <div class="visual-element">
+        <div class="cube-core"></div>
+      </div>
+      
+      <div class="card-details">
+        <h2 class="card-title">Parallax Hologram</h2>
+        <p class="card-description">
+          A dynamic 3D glassmorphism container using real-time mouse tracking, CSS transforms, and directional lighting layers.
+        </p>
+        <button class="card-btn">Explore Component</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const card = document.getElementById('card');
+
+    card.addEventListener('mousemove', (e) => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      // Calculate center offset (-1 to 1)
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotateX = ((y - centerY) / centerY) * -15; // Max 15 deg tilt
+      const rotateY = ((x - centerX) / centerX) * 15;
+
+      // Update Card 3D Tilt
+      card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+
+      // Update Light Flare Position
+      const mouseXPercent = (x / rect.width) * 100;
+      const mouseYPercent = (y / rect.height) * 100;
+      card.style.setProperty('--mouse-x', `${mouseXPercent}%`);
+      card.style.setProperty('--mouse-y', `${mouseYPercent}%`);
+    });
+
+    // Reset transform on mouse leave
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = 'rotateX(0deg) rotateY(0deg)';
+      card.style.transition = 'transform 0.5s ease';
+    });
+
+    card.addEventListener('mouseenter', () => {
+      card.style.transition = 'none';
+    });
+  </script>
+</body>
+</html>
